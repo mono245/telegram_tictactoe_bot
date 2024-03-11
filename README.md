@@ -23,5 +23,5 @@ BOT_TOKEN="your telegram token"
 
 ### Запуск:
 1. Перейдите в терминале в папку bot к файлам bot.py, .env: `cd ...`
-2. Запустите bot.py: (Windows) `python -m bot.bot`, (Unix-подобные): `python3 -m rps_bot.bot`
+2. Запустите bot.py: (Windows) `python -m bot.bot`, (Unix-подобные): `python3 -m bot.bot`
 3. Бот должен запуститься успешно :)
