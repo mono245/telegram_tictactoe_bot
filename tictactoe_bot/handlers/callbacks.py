@@ -1,13 +1,21 @@
-from random import randint
+from random import choice
 
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
 
-from ...keyboards import game_kb
-from ...states import InGame
-from ...utils import bot_choice
-from ...middlewars import WinMiddleware
+from ..keyboards import game_kb
+from ..states import InGame
+from ..middlewares import WinMiddleware
+
+
+def _bot_choice(fields: list[str]) -> int:
+    empty_fields = [i for i, field in enumerate(fields) if field == "-"]
+
+    if not empty_fields:  # if there's no free fields
+        return -1
+    
+    return choice(empty_fields)
 
 
 router = Router()
@@ -25,7 +33,7 @@ async def fields_callback(callback: CallbackQuery, state: FSMContext) -> None:
     if fields[field_index] == "-":  # if field is free
         fields[field_index] = "X"  # user choice
         
-        bc = bot_choice(fields)
+        bc = _bot_choice(fields)
         if bc != -1:
             fields[bc] = "O"  # bot choice
 

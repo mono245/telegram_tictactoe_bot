@@ -1,22 +1,21 @@
 import asyncio
 import logging
-from os import getenv
 
 from .handlers import callbacks, cancel, play, basic_cmd
+from .data import config
 
-from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 
-async def main() -> None:
+
+async def run() -> None:
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s |%(levelname)s| - %(name)s: %(message)s"
     )
-    load_dotenv()
 
     default = DefaultBotProperties(parse_mode="HTML")
-    bot = Bot(getenv("BOT_TOKEN"), default=default)
+    bot = Bot(config.BOT_TOKEN, default=default)
     dp = Dispatcher()
     dp.include_routers(
         callbacks.router, cancel.router, play.router, basic_cmd.router
@@ -26,5 +25,9 @@ async def main() -> None:
     await dp.start_polling(bot)
 
 
+def main() -> None:
+    asyncio.run(run())
+
+
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

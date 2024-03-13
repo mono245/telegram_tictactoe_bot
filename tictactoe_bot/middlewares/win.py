@@ -4,8 +4,25 @@ from aiogram import BaseMiddleware
 from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
 
-from ..utils import is_win
 from ..keyboards import game_kb
+
+
+def _is_win(fields: list[str], char: str) -> bool:
+    """
+    checking if char param wins in tic-tac-toe
+    
+    :param char: character, X or O
+    """
+    win_conditions = [
+        (0, 1, 2), (3, 4, 5), (6, 7, 8),  # horizontal
+        (0, 3, 6), (1, 4, 7), (2, 5, 8),  # vertical
+        (0, 4, 8), (2, 4, 6)              # diagonal
+    ]
+    
+    for condition in win_conditions:
+        if all(fields[i] == char for i in condition):
+            return True
+    return False
 
 
 class WinMiddleware(BaseMiddleware):
@@ -28,7 +45,7 @@ class WinMiddleware(BaseMiddleware):
         except KeyError:  # if state is clear
             return
 
-        if is_win(fields, "X"):  # player win
+        if _is_win(fields, "X"):  # player win
             await event.message.edit_text(
                 "<b>Вы победили!</b>",
                 reply_markup=game_kb(fields)
@@ -36,7 +53,7 @@ class WinMiddleware(BaseMiddleware):
             await state.clear()
             return
         
-        if is_win(fields, "O"):  # bot win
+        if _is_win(fields, "O"):  # bot win
             await event.message.edit_text(
                 "<b>Вы проиграли!</b>",
                 reply_markup=game_kb(fields)
